@@ -1,0 +1,471 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Personalized Career Path Recommendation System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 40px;
+            text-align: center;
+        }
+
+        .header h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+        }
+
+        .header p {
+            font-size: 1.2em;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .form-section {
+            margin-bottom: 30px;
+        }
+
+        .form-section h2 {
+            color: #667eea;
+            margin-bottom: 20px;
+            font-size: 1.5em;
+            border-bottom: 2px solid #667eea;
+            padding-bottom: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 8px;
+        }
+
+        input[type="text"],
+        textarea,
+        select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 1em;
+            transition: border-color 0.3s;
+        }
+
+        input[type="text"]:focus,
+        textarea:focus,
+        select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        .checkbox-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+        }
+
+        .checkbox-item input[type="checkbox"] {
+            margin-right: 8px;
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+        }
+
+        .checkbox-item label {
+            margin: 0;
+            cursor: pointer;
+            font-weight: 400;
+        }
+
+        .button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 40px;
+            border: none;
+            border-radius: 8px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            display: block;
+            margin: 30px auto;
+        }
+
+        .button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(102, 126, 234, 0.4);
+        }
+
+        .button:active {
+            transform: translateY(0);
+        }
+
+        .results {
+            margin-top: 40px;
+        }
+
+        .career-card {
+            background: #f8f9fa;
+            border-left: 4px solid #667eea;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .career-card:hover {
+            transform: translateX(5px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .career-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .career-name {
+            font-size: 1.5em;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .match-score {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 1.1em;
+        }
+
+        .career-description {
+            color: #666;
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+
+        .skills-section {
+            margin-bottom: 15px;
+        }
+
+        .skills-section h4 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .skill-tag {
+            display: inline-block;
+            background: #e7eaf6;
+            color: #667eea;
+            padding: 5px 12px;
+            border-radius: 15px;
+            margin: 4px;
+            font-size: 0.9em;
+        }
+
+        .skill-gap {
+            background: #ffe7e7;
+            color: #e74c3c;
+        }
+
+        .learning-resources {
+            margin-top: 15px;
+        }
+
+        .learning-resources h4 {
+            color: #667eea;
+            margin-bottom: 10px;
+        }
+
+        .learning-resources ul {
+            list-style-position: inside;
+            color: #666;
+        }
+
+        .learning-resources li {
+            padding: 5px 0;
+            line-height: 1.5;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #667eea;
+            font-size: 1.2em;
+        }
+
+        .error {
+            background: #ffe7e7;
+            color: #e74c3c;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .info-box {
+            background: #e7f3ff;
+            border-left: 4px solid #2196F3;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+        }
+
+        .info-box p {
+            color: #1976D2;
+            line-height: 1.6;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>🎓 Career Path Recommendation System</h1>
+            <p>Discover your ideal career path based on your skills, interests, and background</p>
+        </div>
+
+        <div class="content">
+            <div class="info-box">
+                <p>Welcome! This system analyzes your interests, current skills, and academic background to recommend suitable career paths along with required skills and learning suggestions. Fill out the form below to get personalized recommendations.</p>
+            </div>
+
+            <form id="studentForm">
+                <div class="form-section">
+                    <h2>Personal Information</h2>
+                    <div class="form-group">
+                        <label for="name">Name:</label>
+                        <input type="text" id="name" name="name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="academic_background">Academic Background:</label>
+                        <select id="academic_background" name="academic_background" required>
+                            <option value="">Select your background...</option>
+                            <option value="Computer Science">Computer Science</option>
+                            <option value="Information Technology">Information Technology</option>
+                            <option value="Software Engineering">Software Engineering</option>
+                            <option value="Data Science">Data Science</option>
+                            <option value="Business">Business</option>
+                            <option value="Marketing">Marketing</option>
+                            <option value="Design">Design</option>
+                            <option value="Engineering">Engineering</option>
+                            <option value="Mathematics">Mathematics</option>
+                            <option value="Statistics">Statistics</option>
+                            <option value="Economics">Economics</option>
+                            <option value="Other">Other</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h2>Your Interests</h2>
+                    <div class="checkbox-group" id="interestsGroup">
+                        <!-- Interests will be populated dynamically -->
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h2>Current Skills</h2>
+                    <div class="checkbox-group" id="skillsGroup">
+                        <!-- Skills will be populated dynamically -->
+                    </div>
+                </div>
+
+                <button type="submit" class="button">Get Career Recommendations</button>
+            </form>
+
+            <div id="loading" class="loading hidden">
+                <p>🔍 Analyzing your profile and generating recommendations...</p>
+            </div>
+
+            <div id="error" class="error hidden"></div>
+
+            <div id="results" class="results hidden">
+                <h2 style="color: #667eea; margin-bottom: 30px; text-align: center; font-size: 2em;">
+                    Your Recommended Career Paths
+                </h2>
+                <div id="recommendationsContainer"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE_URL = 'http://localhost:5000/api';
+
+        // Load interests and skills on page load
+        document.addEventListener('DOMContentLoaded', async () => {
+            try {
+                await loadInterests();
+                await loadSkills();
+            } catch (error) {
+                console.error('Error loading form data:', error);
+            }
+        });
+
+        async function loadInterests() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/interests`);
+                const data = await response.json();
+                const interestsGroup = document.getElementById('interestsGroup');
+                
+                data.interests.forEach(interest => {
+                    const div = document.createElement('div');
+                    div.className = 'checkbox-item';
+                    div.innerHTML = `
+                        <input type="checkbox" id="interest-${interest}" name="interests" value="${interest}">
+                        <label for="interest-${interest}">${interest}</label>
+                    `;
+                    interestsGroup.appendChild(div);
+                });
+            } catch (error) {
+                console.error('Error loading interests:', error);
+            }
+        }
+
+        async function loadSkills() {
+            try {
+                const response = await fetch(`${API_BASE_URL}/skills`);
+                const data = await response.json();
+                const skillsGroup = document.getElementById('skillsGroup');
+                
+                data.skills.forEach(skill => {
+                    const div = document.createElement('div');
+                    div.className = 'checkbox-item';
+                    div.innerHTML = `
+                        <input type="checkbox" id="skill-${skill}" name="skills" value="${skill}">
+                        <label for="skill-${skill}">${skill}</label>
+                    `;
+                    skillsGroup.appendChild(div);
+                });
+            } catch (error) {
+                console.error('Error loading skills:', error);
+            }
+        }
+
+        document.getElementById('studentForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            // Show loading, hide results and errors
+            document.getElementById('loading').classList.remove('hidden');
+            document.getElementById('results').classList.add('hidden');
+            document.getElementById('error').classList.add('hidden');
+            
+            // Collect form data
+            const formData = {
+                name: document.getElementById('name').value,
+                academic_background: document.getElementById('academic_background').value,
+                interests: Array.from(document.querySelectorAll('input[name="interests"]:checked'))
+                    .map(cb => cb.value),
+                skills: Array.from(document.querySelectorAll('input[name="skills"]:checked'))
+                    .map(cb => cb.value)
+            };
+
+            try {
+                const response = await fetch(`${API_BASE_URL}/recommend`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(formData)
+                });
+
+                if (!response.ok) {
+                    throw new Error('Failed to get recommendations');
+                }
+
+                const data = await response.json();
+                displayRecommendations(data.recommendations);
+            } catch (error) {
+                console.error('Error:', error);
+                document.getElementById('error').textContent = 
+                    'Failed to get recommendations. Please make sure the backend server is running.';
+                document.getElementById('error').classList.remove('hidden');
+            } finally {
+                document.getElementById('loading').classList.add('hidden');
+            }
+        });
+
+        function displayRecommendations(recommendations) {
+            const container = document.getElementById('recommendationsContainer');
+            container.innerHTML = '';
+
+            recommendations.forEach((rec, index) => {
+                const card = document.createElement('div');
+                card.className = 'career-card';
+                
+                const skillsHtml = rec.required_skills.map(skill => {
+                    const isGap = rec.skill_gaps.includes(skill);
+                    return `<span class="skill-tag ${isGap ? 'skill-gap' : ''}">${skill}</span>`;
+                }).join('');
+
+                const resourcesHtml = rec.learning_resources.map(resource => 
+                    `<li>${resource}</li>`
+                ).join('');
+
+                card.innerHTML = `
+                    <div class="career-header">
+                        <div class="career-name">${index + 1}. ${rec.career_name}</div>
+                        <div class="match-score">${rec.match_score}% Match</div>
+                    </div>
+                    <div class="career-description">${rec.description}</div>
+                    <div class="skills-section">
+                        <h4>Required Skills:</h4>
+                        ${skillsHtml}
+                        ${rec.skill_gaps.length > 0 ? '<p style="margin-top: 10px; color: #e74c3c; font-size: 0.9em;">Red tags indicate skills you need to develop</p>' : ''}
+                    </div>
+                    <div class="learning-resources">
+                        <h4>📚 Learning Path:</h4>
+                        <ul>${resourcesHtml}</ul>
+                    </div>
+                `;
+                
+                container.appendChild(card);
+            });
+
+            document.getElementById('results').classList.remove('hidden');
+            document.getElementById('results').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+    </script>
+</body>
+</html>

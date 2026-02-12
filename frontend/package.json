@@ -1,0 +1,12 @@
+{
+  "name": "frontend",
+  "version": "1.0.0",
+  "description": "Frontend for Personalized Career Path Recommendation System",
+  "main": "index.html",
+  "scripts": {
+    "start": "python -m http.server 8000"
+  },
+  "keywords": ["career", "recommendation", "education"],
+  "author": "Chaitra",
+  "license": "ISC"
+}
